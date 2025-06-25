@@ -1,5 +1,5 @@
 # ThaiChatBot 🇹🇭🤖
-
+![CI](https://github.com/danai06495/thaichatbot/actions/workflows/ci.yml/badge.svg)
 โปรเจกต์ Python AI ChatBot ภาษาไทยอย่างง่าย  
 ใช้เทคนิค sentence-transformers + cosine similarity เพื่อทำ chatbot ที่ตอบคำถามตามข้อมูลที่กำหนด
 
