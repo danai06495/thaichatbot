@@ -3,15 +3,14 @@ name: Python CI & Release
 on:
   push:
     branches: [main]
+    tags:
+      - 'v*.*.*'
   pull_request:
     branches: [main]
-  push:
-    tags:
-      - 'v*.*.*'   # เมื่อ push tag เช่น v1.0.0, v2.3.4 จะ trigger workflow สร้าง release
 
 jobs:
   test:
-    if: github.event_name != 'push' || github.ref_type != 'tag'  
+    if: github.event_name != 'push' || github.ref_type != 'tag'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -36,7 +35,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Create GitHub Release
         id: create_release
         uses: softprops/action-gh-release@v1
@@ -44,5 +42,3 @@ jobs:
           tag_name: ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # ถ้าต้องการแนบไฟล์ build/artifact เพิ่มเติม ให้เพิ่มขั้นตอน upload asset ที่นี่
