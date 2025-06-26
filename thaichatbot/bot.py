@@ -1,21 +1,24 @@
-# thaichatbot/bot.py
-
+import json
+from pathlib import Path
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
 class ThaiChatBot:
-    def __init__(self, name="ไทยแชทบอท"):
+    def __init__(self, name="ไทยแชทบอท", data_path="data/qa_pairs.json"):
         self.name = name
-        self.model = SentenceTransformer('distiluse-base-multilingual-cased-v2')  # รองรับภาษาไทยดี
+        self.model = SentenceTransformer("distiluse-base-multilingual-cased-v2")
+
+        # ✅ โหลด QA จาก JSON
+        with open(data_path, encoding="utf-8") as f:
+            raw_data = json.load(f)
+
         self.qa_pairs = [
-            ("สวัสดี", "สวัสดีครับ 😊"),
-            ("ชื่ออะไร", f"ฉันชื่อ {self.name}"),
-            ("คุณทำอะไรได้บ้าง", "ฉันสามารถตอบคำถามทั่วไปเป็นภาษาไทยได้"),
-            ("ลาก่อน", "เจอกันใหม่นะครับ 👋"),
+            (item["question"], item["answer"].replace("{name}", self.name))
+            for item in raw_data
         ]
-        self.questions = [q for q, a in self.qa_pairs]
-        self.answers = [a for q, a in self.qa_pairs]
+        self.questions = [q for q, _ in self.qa_pairs]
+        self.answers = [a for _, a in self.qa_pairs]
         self.embeddings = self.model.encode(self.questions)
 
     def reply(self, message: str) -> str:
